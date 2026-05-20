@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício 1 - LocalStorage</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        #mensagem {
+            margin-top: 15px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bloco de Anotações Pessoal</h1>
+
+        <textarea id="anotacao" placeholder="Digite sua anotação aqui..."></textarea>
+
+        <br>
+
+        <button onclick="salvarAnotacao()">Salvar anotação</button>
+        <button onclick="limparAnotacao()">Limpar anotação</button>
+
+        <p id="mensagem"></p>
+    </div>
+
+    <script>
+        const textarea = document.getElementById("anotacao");
+        const mensagem = document.getElementById("mensagem");
+
+        // Carregar anotação salva
+        window.onload = function () {
+            const anotacaoSalva = localStorage.getItem("minhaAnotacao");
+
+            if (anotacaoSalva) {
+                textarea.value = anotacaoSalva;
+                mensagem.textContent = "Anotação carregada!";
+            } else {
+                mensagem.textContent = "Nenhuma anotação salva.";
+            }
+        };
+
+        function salvarAnotacao() {
+            localStorage.setItem("minhaAnotacao", textarea.value);
+            mensagem.textContent = "Anotação salva com sucesso!";
+        }
+
+        function limparAnotacao() {
+            textarea.value = "";
+            localStorage.removeItem("minhaAnotacao");
+            mensagem.textContent = "Anotação removida!";
+        }
+    </script>
+
+</body>
+</html>

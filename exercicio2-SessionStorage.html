@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício 2 - SessionStorage</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 10px;
+            width: 70%;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .mensagem {
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Carrinho de Compras</h1>
+
+        <input type="text" id="produto" placeholder="Nome do produto">
+        <button onclick="adicionarProduto()">Adicionar ao carrinho</button>
+
+        <h3 id="contador">0 produto(s) no carrinho</h3>
+
+        <ul id="listaProdutos"></ul>
+
+        <button onclick="esvaziarCarrinho()">Esvaziar carrinho</button>
+
+        <p class="mensagem" id="mensagem"></p>
+    </div>
+
+    <script>
+        let produtos = [];
+
+        const lista = document.getElementById("listaProdutos");
+        const contador = document.getElementById("contador");
+        const mensagem = document.getElementById("mensagem");
+
+        // Carregar carrinho
+        window.onload = function () {
+            const carrinhoSalvo = sessionStorage.getItem("carrinho");
+
+            if (carrinhoSalvo) {
+                produtos = JSON.parse(carrinhoSalvo);
+            }
+
+            atualizarTela();
+        };
+
+        function salvarCarrinho() {
+            sessionStorage.setItem("carrinho", JSON.stringify(produtos));
+        }
+
+        function atualizarTela() {
+            lista.innerHTML = "";
+
+            produtos.forEach((produto, index) => {
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    ${produto}
+                    <button onclick="removerProduto(${index})">Remover</button>
+                `;
+
+                lista.appendChild(li);
+            });
+
+            contador.textContent = `${produtos.length} produto(s) no carrinho`;
+
+            if (produtos.length === 0) {
+                mensagem.textContent = "Carrinho vazio.";
+            } else {
+                mensagem.textContent = "Carrinho atualizado!";
+            }
+        }
+
+        function adicionarProduto() {
+            const input = document.getElementById("produto");
+            const nomeProduto = input.value.trim();
+
+            if (nomeProduto === "") {
+                mensagem.textContent = "Digite um produto.";
+                return;
+            }
+
+            produtos.push(nomeProduto);
+
+            salvarCarrinho();
+            atualizarTela();
+
+            input.value = "";
+        }
+
+        function removerProduto(index) {
+            produtos.splice(index, 1);
+
+            salvarCarrinho();
+            atualizarTela();
+        }
+
+        function esvaziarCarrinho() {
+            produtos = [];
+
+            sessionStorage.removeItem("carrinho");
+
+            atualizarTela();
+
+            mensagem.textContent = "Carrinho esvaziado!";
+        }
+    </script>
+
+</body>
+</html>

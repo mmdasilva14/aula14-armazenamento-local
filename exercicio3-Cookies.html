@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício 3 - Cookies</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        select, button {
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        #mensagem {
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1 id="titulo">Bem-vindo</h1>
+        <h2 id="subtitulo">Escolha seu idioma</h2>
+
+        <p id="frase">
+            Este site salva sua preferência usando cookies.
+        </p>
+
+        <select id="idioma">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+        </select>
+
+        <br>
+
+        <button onclick="salvarPreferencia()">
+            Salvar preferência
+        </button>
+
+        <button onclick="removerPreferencia()">
+            Remover preferência
+        </button>
+
+        <p id="mensagem"></p>
+
+    </div>
+
+    <script>
+        const textos = {
+            pt: {
+                titulo: "Bem-vindo",
+                subtitulo: "Escolha seu idioma",
+                frase: "Este site salva sua preferência usando cookies."
+            },
+
+            en: {
+                titulo: "Welcome",
+                subtitulo: "Choose your language",
+                frase: "This website saves your preference using cookies."
+            }
+        };
+
+        function aplicarIdioma(idioma) {
+            document.getElementById("titulo").textContent =
+                textos[idioma].titulo;
+
+            document.getElementById("subtitulo").textContent =
+                textos[idioma].subtitulo;
+
+            document.getElementById("frase").textContent =
+                textos[idioma].frase;
+
+            document.getElementById("idioma").value = idioma;
+        }
+
+        function setCookie(nome, valor, dias) {
+            const segundos = dias * 24 * 60 * 60;
+
+            document.cookie =
+                `${nome}=${valor}; max-age=${segundos}; path=/`;
+        }
+
+        function getCookie(nome) {
+            const cookies = document.cookie.split(";");
+
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+
+                if (cookie.startsWith(nome + "=")) {
+                    return cookie.substring(nome.length + 1);
+                }
+            }
+
+            return null;
+        }
+
+        function deleteCookie(nome) {
+            document.cookie =
+                `${nome}=; max-age=0; path=/`;
+        }
+
+        function salvarPreferencia() {
+            const idioma = document.getElementById("idioma").value;
+
+            setCookie("idioma", idioma, 14);
+
+            aplicarIdioma(idioma);
+
+            document.getElementById("mensagem").textContent =
+                "Preferência salva!";
+        }
+
+        function removerPreferencia() {
+            deleteCookie("idioma");
+
+            aplicarIdioma("pt");
+
+            document.getElementById("mensagem").textContent =
+                "Preferência removida!";
+        }
+
+        // Carregar idioma salvo
+        window.onload = function () {
+            const idiomaSalvo = getCookie("idioma");
+
+            if (idiomaSalvo) {
+                aplicarIdioma(idiomaSalvo);
+            } else {
+                aplicarIdioma("pt");
+            }
+        };
+    </script>
+
+</body>
+</html>
